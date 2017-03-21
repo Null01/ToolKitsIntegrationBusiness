@@ -111,9 +111,11 @@ app.AppView = Backbone.View.extend({
             completed: false
         });
         this.input.val(''); // clean input box
+        this.inputLength.val('');
     },
 
     addAll: function () {
+        $('#output-field').text(''); // clean the output text
         this.$('#content-table').html(''); // clean the todo list
         app.todoList.each(function (todo) {
             var view = new app.TodoView({model: todo});
