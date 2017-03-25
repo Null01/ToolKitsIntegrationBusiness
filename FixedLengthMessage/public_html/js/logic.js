@@ -7,13 +7,9 @@ var app = {}; // create namespace for our app
 //--------------
 app.Todo = Backbone.Model.extend({
     defaults: {
-        title: '',
+        content: '',
         type: '',
-        length: 0,
-        completed: false
-    },
-    toggle: function () {
-        this.save({completed: !this.get('completed')});
+        length: 0
     }
 });
 
@@ -58,7 +54,7 @@ app.TodoView = Backbone.View.extend({
         var size = this.input[1].value.trim();
         if (name) {
             this.model.save({
-                title: name,
+                content: name,
                 length: size
             });
         }
@@ -93,8 +89,9 @@ app.AppView = Backbone.View.extend({
 
     events: {
         'keypress #name-field': 'saveItem',
-        'keypress #length-field': 'saveItem'
-                // 'change #type-field': ''
+        'keypress #length-field': 'saveItem',
+        'click #button-clear-output': 'clearOutputField',
+        'click #button-generate-json': 'generateJSon'
     },
 
     //-------------------------------
@@ -105,28 +102,39 @@ app.AppView = Backbone.View.extend({
             return;
         }
         app.todoList.create({// Save input in a collection
-            title: this.input.val().trim(),
+            content: this.input.val().trim(),
             type: this.inputType.val().trim(),
-            length: this.inputLength.val().trim(),
-            completed: false
+            length: this.inputLength.val().trim()
         });
         this.input.val(''); // clean input box
         this.inputLength.val('');
     },
 
     addAll: function () {
-        $('#output-field').text(''); // clean the output text
         this.$('#content-table').html(''); // clean the todo list
+        $('#output-field').text('');
         app.todoList.each(function (todo) {
             var view = new app.TodoView({model: todo});
             $('#content-table').append(view.render().el);
-            //$('#output-field').append(view.render().el);
             var obj = todo.attributes;
-            console.log(obj.title + ' ' + obj.length);
-            $('#output-field').append(this.lpad(obj.title, obj.length, obj.type === 'number' ? '0' : ' '));
+            $('#output-field').append(this.lpad(obj.content, obj.length, obj.type === 'number' ? '0' : ' '));
         }, this);
     },
 
+    clearOutputField: function () {
+        $('#output-field').val(''); // clean the output text
+    },
+
+    generateJSon: function () {
+        $('#output-field-json').text('[');
+        var isFirst = true;
+        app.todoList.each(function (todo) {
+            var model = todo.attributes;
+            $('#output-field-json').append(((isFirst) ? '' : ',') + JSON.stringify(model, undefined, 2));
+            isFirst = false;
+        }, this);
+        $('#output-field-json').append(']');
+    },
     lpad: function (str, minLen, ch) {
         return ((str.length < minLen)
                 ? ((new Array(minLen - str.length + 1)).join(ch) + str) : str);
