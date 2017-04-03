@@ -91,7 +91,8 @@ app.AppView = Backbone.View.extend({
         'keypress #name-field': 'saveItem',
         'keypress #length-field': 'saveItem',
         'click #button-clear-output': 'clearOutputField',
-        'click #button-generate-json': 'generateJSon'
+        'click #button-generate-json': 'generateJSon',
+        'click #button-load-json': 'loadJson'
     },
 
     //-------------------------------
@@ -134,6 +135,27 @@ app.AppView = Backbone.View.extend({
             isFirst = false;
         }, this);
         $('#output-field-json').append(']');
+    },
+    loadJson: function () {
+        app.todoList.each(function (model) {
+            model.destroy();
+        });
+        var json = JSON.parse($('#input-field-json').val());
+        app.todoList = new app.TodoList(json);
+        this.$('#content-table').html(''); // clean the todo list
+        $('#output-field').text('');
+        app.todoList.each(function (todo) {
+            var view = new app.TodoView({model: todo});
+            $('#content-table').append(view.render().el);
+            var obj = todo.attributes;
+            app.todoList.create({// Save input in a collection
+                id: obj.id,
+                content: obj.content,
+                type: obj.type,
+                length: obj.length
+            });
+            $('#output-field').append(this.lpad(obj.content, obj.length, obj.type === 'number' ? '0' : ' '));
+        }, this);
     },
     lpad: function (str, minLen, ch) {
         return ((str.length < minLen)

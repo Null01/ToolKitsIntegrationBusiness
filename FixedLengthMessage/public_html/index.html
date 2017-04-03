@@ -75,9 +75,12 @@
                         <button id="button-generate-json"  class="fluid ui red button" >Generate JSON</button>
                     </div>
                     <div class="field">
-                        <button id="button-load-json"  class="fluid ui blue button" >Load JSON</button>
+                        <button id="button-pre-load-json"  class="fluid ui blue button" >Load JSON</button>
                     </div>
-
+                    <div class="field">
+                        <textarea id="input-field-json" style="font-family: monospace; width: 100%; height: 600px; display: none;" ></textarea>
+                        <button id="button-load-json"  class="fluid ui blue button" style="display: none;" >Load Now</button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -129,12 +132,26 @@
         <script type="text/javascript" src="/tools/flf/js/logic.js" ></script> 
 
         <script type="text/javascript">
-$('.menu .item').tab();
+            $('.menu .item').tab();
 
-$('#button-generate-json').click(function () {
-    $('.ui.modal.ouput-json').modal('show');
-});
-            </script>
+            $('#button-generate-json').click(function () {
+                $('.ui.modal.ouput-json').modal('show');
+            });
 
-        </body>
-    </html>
+            $('#button-pre-load-json').click(function () {
+                var css = $('#input-field-json').css('display');
+                if (css === 'none') {
+                    $('#input-field-json').css('display', 'inline-block');
+                    $('#button-load-json').css('display', 'inline-block');
+                } else {
+                    $('#input-field-json').css('display', 'none');
+                    $('#button-load-json').css('display', 'none');
+                }
+                $('html,body').animate({
+                    scrollTop: $("#input-field-json").offset().top
+                }, 'slow');
+            });
+        </script>
+
+    </body>
+</html>
