@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <p:row>
+        <p class="text-center" > #{app['appweb.footer.title']} </p>
+    </p:row>
+
+    <p:ajaxStatus onstart="PF('loaderDialog').show()" onsuccess="PF('loaderDialog').hide()" />
+
+    <p:dialog widgetVar="loaderDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <img src="/soa/integracion/img/app/loading.gif" />
+    </p:dialog>
+
+</ui:composition>
